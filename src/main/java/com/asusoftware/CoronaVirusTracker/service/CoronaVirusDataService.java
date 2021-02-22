@@ -1,6 +1,7 @@
 package com.asusoftware.CoronaVirusTracker.service;
 
 import com.asusoftware.CoronaVirusTracker.model.LocationStats;
+import com.asusoftware.CoronaVirusTracker.model.LocationStatsDto;
 import lombok.Getter;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
@@ -27,13 +28,13 @@ public class CoronaVirusDataService {
 
     private final static String VIRUS_DATA_URL = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_confirmed_global.csv";
 
-    private List<LocationStats> allStats = new ArrayList<>();
+    private List<LocationStatsDto> allStats = new ArrayList<>();
 
     @PostConstruct // Execute that function when the application starts
     //           second minute hour day month year
     @Scheduled(cron = "* * 1 * * *") // Execute this function every time that in set inside ()
     public void fetchVirusData() throws IOException, InterruptedException {
-        List<LocationStats> newStats = new ArrayList<>();
+        List<LocationStatsDto> newStats = new ArrayList<>();
         // Make an http call to the url to get the data
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
@@ -50,7 +51,7 @@ public class CoronaVirusDataService {
             int prevDayCases = Integer.parseInt(record.get(record.size()-2));
             locationStat.setLatestTotalCases(latestCases);
             locationStat.setDiffFromPrevDay(latestCases - prevDayCases);
-            newStats.add(locationStat);
+            newStats.add(LocationStatsDto.toDto(locationStat));
         }
         this.allStats = newStats;
     }
