@@ -15,7 +15,7 @@ public class WebSecurityConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/api/**")
-                .allowedOrigins("http://domain2.com")
+                .allowedOrigins("*")
                 .allowedMethods("GET")
                 .allowedHeaders("header1", "header2", "header3")
                 .exposedHeaders("header1", "header2")
